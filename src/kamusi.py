@@ -8,13 +8,15 @@ class Trie:
   def __init__(self):
     self.root = TrieNode() 
   
-  def insert(self, word):
+  def insert(self, word, definitions=None):
     current = self.root
     for char in word:
       if char not in current.children:
         current.children[char] = TrieNode()
       current = current.children[char]
     current.is_end_of_word = True
+    if definitions:
+      current.definitions.extend(definitions)
 
   def search(self, word):
     current = self.root 

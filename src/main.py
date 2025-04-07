@@ -1,8 +1,10 @@
 from typing import Union
-
 from fastapi import FastAPI
+from kamusi import Trie
+from models import Entry
 
 app = FastAPI()
+kamusi = Trie()
 
 
 @app.get("/")
@@ -29,3 +31,10 @@ def get_user_posts(user_id: int, limit: int = 10, sort: str = 'desc'):
     "limit": limit,
     "sort": sort
   }
+
+# Start of an amazing kamusi dictionary
+@app.post('/words')
+def create_word(entry: Entry):
+  kamusi.insert(entry.word, entry.definitions)
+  neno = kamusi.search(entry.word)
+  return {"word": entry.word, "definitions": neno.definitions}
