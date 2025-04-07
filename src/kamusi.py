@@ -46,3 +46,5 @@ class Trie:
     if node is not None:
       self._dfs(node, prefix, results)
     return results
+
+kamusi = Trie()

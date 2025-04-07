@@ -1,11 +1,9 @@
 from typing import Union
 from fastapi import FastAPI
-from kamusi import Trie
+from kamusi import kamusi
 from models import Entry
 
 app = FastAPI()
-kamusi = Trie()
-
 
 @app.get("/")
 def read_root():
