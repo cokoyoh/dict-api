@@ -30,6 +30,10 @@ async def global_exception_handler(request: Request, exc: Exception):
   )
 
 # Start of an amazing kamusi dictionary API
+@app.get('/')
+def home():
+  return {"message": "hello world!"}
+
 @app.post("/words")
 def create_word(entry: Entry):
   kamusi.insert(entry.word, entry.definitions)
