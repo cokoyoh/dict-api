@@ -78,6 +78,4 @@ jobs:
         with:
           app-name: 'kamusi-api'
           slot-name: 'Production'
-          package: '.'
-          startup-command: ./startup.sh
           
