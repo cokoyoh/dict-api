@@ -1,8 +1,9 @@
 from typing import Union, List
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import JSONResponse
 from kamusi import Trie
 from models import Entry, WordResponse, AutocompleteResponse
+from word_not_found_exception import WordNotFound
 
 app = FastAPI(
   title="Swahili language API",
@@ -13,6 +14,20 @@ app = FastAPI(
   )
 
 kamusi = Trie()
+
+@app.exception_handler(WordNotFound)
+def word_not_found_handler(request: Request, exc: WordNotFound):
+    return JSONResponse(
+        status_code=404,
+        content={"error": f"Word {exc.query} not found", "status": '404 Not found'},
+    )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+  return JSONResponse(
+    status_code=500,
+    content={"error": "Internal Server Error", "message": "Something went wrong..."}
+  )
 
 # Start of an amazing kamusi dictionary API
 @app.post("/words")
@@ -27,7 +42,7 @@ def get_word(
   ) -> WordResponse:
     entry = kamusi.search(query)
     if entry is None:
-      raise HTTPException(status_code=404, detail={"message": f"{query} not found", "status": '404 Not found'})
+      raise WordNotFound(query)
     content = {"word": query, "definitions": entry.definitions}
     return JSONResponse(content, status_code=200)
 
