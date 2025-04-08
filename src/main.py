@@ -36,7 +36,7 @@ def home():
 
 @app.post("/words")
 def create_word(entry: Entry):
-  kamusi.insert(entry.word, entry.definitions)
+  kamusi.insert(entry.word.lower(), entry.definitions)
   content = {"message": "word entry added successfully"}
   return JSONResponse(content=content, status_code=200)
 
@@ -44,16 +44,15 @@ def create_word(entry: Entry):
 def get_word(
   query: str = Query(..., min_length=3, description="The word to search")
   ) -> WordResponse:
-    entry = kamusi.search(query)
+    entry = kamusi.search(query.lower())
     if entry is None:
       raise WordNotFound(query)
-    content = {"word": query, "definitions": entry.definitions}
-    return JSONResponse(content, status_code=200)
+    return JSONResponse(content=entry, status_code=200)
 
 @app.get('/autocomplete/', response_model=AutocompleteResponse)
 def get_words_that_start_with_prefix(
   query: str = Query(..., min_length=2, description="The prefix to autocomplete")
 ) -> AutocompleteResponse:
-  words = kamusi.autocomplete(query)
+  words = kamusi.autocomplete(query.lower())
   content = {"prefix": query, "words": words}
   return JSONResponse(content, status_code=200)

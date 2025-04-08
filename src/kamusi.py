@@ -19,12 +19,10 @@ class Trie:
       current.definitions.extend(definitions)
 
   def search(self, word):
-    current = self.root 
-    for char in word:
-      if char not in current.children:
-        return None
-      current = current.children[char]
-    return current
+    node = self._find_node(word)
+    if node and node.is_end_of_word:
+      return { "word": word, "definitions": node.definitions }
+    return None
 
   def _find_node(self, prefix):
     current = self.root
