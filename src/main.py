@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from kamusi import Trie
 from models import Entry, WordResponse
@@ -53,3 +53,11 @@ def get_word(word: str) -> WordResponse:
       raise HTTPException(status_code=404, detail={"message": f"{word} not found", "status": '404 Not found'})
     content = {"word": word, "definitions": entry.definitions}
     return JSONResponse(content, status_code=200)
+
+@app.get('/autocomplete/')
+def get_words_that_start_with_prefix(
+  query: str = Query(..., min_length=2, description="The prefix to search")
+):
+  words = kamusi.autocomplete(query)
+  content = {"prefix": query, "words": words}
+  return JSONResponse(content, status_code=200)

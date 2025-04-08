@@ -36,7 +36,7 @@ class Trie:
 
   def _dfs(self, node, prefix, results):    
     if node.is_end_of_word:
-      results.append(prefix)
+      results.append({ "word": prefix, "definitions": node.definitions })
     for char, child_node in node.children.items():
       self._dfs(child_node, prefix + char, results)
 
