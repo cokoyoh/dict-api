@@ -9,3 +9,7 @@ class Entry(BaseModel):
 class WordResponse(BaseModel):
   word: str
   definitions: List[str]
+
+class AutocompleteResponse(BaseModel):
+  prefix: str
+  words: List[WordResponse]

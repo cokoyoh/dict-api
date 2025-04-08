@@ -1,8 +1,8 @@
-from typing import Union
+from typing import Union, List
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from kamusi import Trie
-from models import Entry, WordResponse
+from models import Entry, WordResponse, AutocompleteResponse
 
 app = FastAPI(
   title="Swahili language API",
@@ -46,18 +46,20 @@ def create_word(entry: Entry):
   content = {"message": "word entry added successfully"}
   return JSONResponse(content=content, status_code=200)
 
-@app.get("/words/{word}", response_model=WordResponse)
-def get_word(word: str) -> WordResponse:
-    entry = kamusi.search(word)
+@app.get("/search/", response_model=WordResponse)
+def get_word(
+  query: str = Query(..., min_length=3, description="The word to search")
+  ) -> WordResponse:
+    entry = kamusi.search(query)
     if entry is None:
-      raise HTTPException(status_code=404, detail={"message": f"{word} not found", "status": '404 Not found'})
-    content = {"word": word, "definitions": entry.definitions}
+      raise HTTPException(status_code=404, detail={"message": f"{query} not found", "status": '404 Not found'})
+    content = {"word": query, "definitions": entry.definitions}
     return JSONResponse(content, status_code=200)
 
-@app.get('/autocomplete/')
+@app.get('/autocomplete/', response_model=AutocompleteResponse)
 def get_words_that_start_with_prefix(
-  query: str = Query(..., min_length=2, description="The prefix to search")
-):
+  query: str = Query(..., min_length=2, description="The prefix to autocomplete")
+) -> AutocompleteResponse:
   words = kamusi.autocomplete(query)
   content = {"prefix": query, "words": words}
   return JSONResponse(content, status_code=200)
