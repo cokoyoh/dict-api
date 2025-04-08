@@ -5,3 +5,7 @@ class Entry(BaseModel):
   word: str
   # is_end_of_word: Optional[bool]
   definitions: Optional[List[str]]
+  
+class WordResponse(BaseModel):
+  word: str
+  definitions: List[str]

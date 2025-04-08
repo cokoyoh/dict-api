@@ -22,7 +22,7 @@ class Trie:
     current = self.root 
     for char in word:
       if char not in current.children:
-        return False
+        return None
       current = current.children[char]
     return current
 
@@ -46,5 +46,3 @@ class Trie:
     if node is not None:
       self._dfs(node, prefix, results)
     return results
-
-kamusi = Trie()

@@ -1,9 +1,18 @@
 from typing import Union
-from fastapi import FastAPI
-from kamusi import kamusi
-from models import Entry
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
+from kamusi import Trie
+from models import Entry, WordResponse
 
-app = FastAPI()
+app = FastAPI(
+  title="Swahili language API",
+  description="A simple dictionary API for the Swahili language",
+  version="0.1.0",
+  docs_url="/swagger",
+  redoc_url="/redocs"
+  )
+
+kamusi = Trie()
 
 @app.get("/")
 def read_root():
@@ -31,8 +40,16 @@ def get_user_posts(user_id: int, limit: int = 10, sort: str = 'desc'):
   }
 
 # Start of an amazing kamusi dictionary
-@app.post('/words')
+@app.post("/words")
 def create_word(entry: Entry):
   kamusi.insert(entry.word, entry.definitions)
-  neno = kamusi.search(entry.word)
-  return {"word": entry.word, "definitions": neno.definitions}
+  content = {"message": "word entry added successfully"}
+  return JSONResponse(content=content, status_code=200)
+
+@app.get("/words/{word}", response_model=WordResponse)
+def get_word(word: str) -> WordResponse:
+    entry = kamusi.search(word)
+    if entry is None:
+      raise HTTPException(status_code=404, detail={"message": f"{word} not found", "status": '404 Not found'})
+    content = {"word": word, "definitions": entry.definitions}
+    return JSONResponse(content, status_code=200)
