@@ -60,7 +60,7 @@ class Trie:
 
             char = word[depth]
             if char in node.children:
-                child_node = _delete(node.children[char], word, depth + 1)
+                child_node = _delete(node.children[char], word, depth + 1) 
                 if child_node is None:
                     del node.children[char]
                     if not node.children and not node.is_end_of_word:
