@@ -37,7 +37,7 @@ class Trie:
         if node.is_end_of_word:
             results.append({"word": prefix, "definitions": node.definitions})
         for char, child_node in node.children.items():
-            self._dfs(child_node, prefix + char, results)
+            self._dfs(child_node, prefix + char, results) 
 
     def autocomplete(self, prefix):
         results = []
