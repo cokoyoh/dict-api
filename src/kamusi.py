@@ -45,3 +45,26 @@ class Trie:
         if node is not None:
             self._dfs(node, prefix, results)
         return results
+    
+    def delete(self, word):
+        def _delete(node, word, depth):
+            if not node:
+                return None
+
+            if depth == len(word):
+                if node.is_end_of_word:
+                    node.is_end_of_word = False
+                    if not node.children:
+                        return None
+                return node
+
+            char = word[depth]
+            if char in node.children:
+                child_node = _delete(node.children[char], word, depth + 1)
+                if child_node is None:
+                    del node.children[char]
+                    if not node.children and not node.is_end_of_word:
+                        return None
+            return node
+
+        _delete(self.root, word, 0)
