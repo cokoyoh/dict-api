@@ -53,7 +53,7 @@ class Trie:
 
             if depth == len(word):
                 if node.is_end_of_word:
-                    node.is_end_of_word = False
+                    node.is_end_of_word = False 
                     if not node.children:
                         return None
                 return node
