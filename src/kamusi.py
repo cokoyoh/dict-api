@@ -46,7 +46,7 @@ class Trie:
             self._dfs(node, prefix, results)
         return results
     
-    def delete(self, word):
+    def delete(self, word): 
         def _delete(node, word, depth):
             if not node:
                 return None
